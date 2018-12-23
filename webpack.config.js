@@ -1,46 +1,28 @@
-// Imports
 const path = require('path');
-// const HtmlWebpackPlugin = require('html-webpack-plugin');
-require("babel-register");
-// Webpack Configuration
-const config = {
-    // Entry
-    entry: './src/index.js',
+const nodeExternals = require('webpack-node-externals');
 
-    // Output
+module.exports = {
+    entry: path.resolve(__dirname, './src/lib/index.js'),
     output: {
-        path: path.resolve(__dirname, 'build'),
-        filename: 'index.js'
+        path: path.resolve(__dirname, './dist/lib'),
+        filename: 'index.js',
+        library: '',
+        libraryTarget: 'commonjs'
     },
-    // Loaders
+    externals: [nodeExternals()],
     module: {
-        rules : [
-            // JavaScript/JSX Files
-            {
+        rules: [{
                 test: /\.js$/,
-                exclude: /(node_modules|bower_components|build)/,
-                use: ['babel-loader']
+                exclude: /(node_modules|bower_components)/,
+                loader: 'babel-loader',
+                options: {
+                    presets: ['@babel/preset-env', '@babel/preset-react']
+                }
             },
-            // CSS Files
             {
                 test: /\.css$/,
                 use: ['style-loader', 'css-loader']
             }
         ]
-    },
-    // Plugins
-    // plugins: [
-    //     new HtmlWebpackPlugin({
-    //         template: './src/index.js',
-    //         filename: 'index.js',
-    //         hash: true
-    //     })
-    // ],
-    // OPTIONAL
-    // Reload On File Change
-    watch: true,
-    // Development Tools (Map Errors To Source File)
-    devtool: 'source-map',
+    }
 };
-// Exports
-module.exports = config;
